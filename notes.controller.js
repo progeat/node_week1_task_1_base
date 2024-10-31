@@ -31,6 +31,31 @@ async function removeNote(id) {
   console.log(chalk.bgGreen('The note has been deleted!'));
 }
 
+async function editNote(id, title) {
+  const notes = await getNotes();
+  let isNoteByID = false;
+
+  const newNotes = [...notes].map((note) => {
+    if (note.id === id) {
+      isNoteByID = true;
+
+      note.title = title;
+
+      return note;
+    }
+
+    return note;
+  });
+
+  if (!isNoteByID) {
+    console.log(chalk.bgRed('Invalid note id!'));
+    return;
+  }
+
+  await saveNotes(newNotes);
+  console.log(chalk.bgGreenBright(`The note id=${id} has been edited!`));
+}
+
 async function getNotes() {
   const notes = await fs.readFile(notesPath, { encoding: 'utf-8' });
   return Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : [];
@@ -53,4 +78,5 @@ module.exports = {
   addNote,
   printNotes,
   removeNote,
+  editNote,
 };
